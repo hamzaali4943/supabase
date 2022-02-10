@@ -99,6 +99,7 @@ export default function useApi() {
     let query = supabase
       .from(table)
       .select('ord_id, ord_num, ord_createAt, ord_amtTotal, comments')
+      .order('ord_id', { ascending: false })
     if (company) { query = query.eq('company', company) }
     if (startDate) { query = query.gte('ord_createAt', startDate.toString()) }
     if (endDate) { query = query.lt('ord_createAt', endDate.toString()) }

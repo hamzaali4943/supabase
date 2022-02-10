@@ -113,10 +113,38 @@
             <q-card class="q-pa-lg">
               <h6 class="font-change">Details are </h6>
               <q-card-section class="text-grey-6">
-               <body>order ID is : {{details.ord_id}}</body>
+
+                <body>customer ID : {{details.cus_id}}</body>
+                <body>customer first Name: {{details.cus_fname}}</body>
+                <body>customer last Name: {{details.cus_lname}}</body>
+                <body>Company Name: {{details.company}}</body>
+                <body>order ID is : {{details.ord_id}}</body>
                 <body>order name is : {{details.ord_name}}</body>
+                <body>order number is : {{details.ord_num}}</body>
+                <body>order amount discount is : {{details.ord_amtDisc}}</body>
+                <body>order amount Refund is : {{details.ord_amtRefund}}</body>
+                <body>order amount Ship is : {{details.ord_amtShip}}</body>
+                <body>order amount Tax is : {{details.ord_amtTax}}</body>
+                <body>order amount Total is : {{details.ord_amtTotal}}</body>
                 <body>order created on : {{details.ord_createAt}}</body>
                 <body>order updated on : {{details.ord_updateAt}}</body>
+                <body>order pay Amount is : {{details.ord_payAmt}}</body>
+                <body>order pay Gate is : {{details.ord_payGate}}</body>
+                <body>order pay Method is : {{details.ord_payMeth}}</body>
+                <body>order pay Reference is : {{details.ord_payRef}}</body>
+                <body>order pay Type is : {{details.ord_payType}}</body>
+                <body>order status is : {{details.ord_status}}</body>
+                <body>order cancel on : {{details.ord_cancelAt}}</body>
+                <body>order closed on : {{details.ord_closeAt}}</body>
+                <q-table
+                  class="q-ma-xl"
+                  flat
+                  title="All Order Items"
+                  :rows="details.orditm"
+                  :pagination="{ rowsPerPage: 25 }"
+                  :rows-per-page-options="[25, 50, 100]"
+
+                />
               </q-card-section>
 
               <q-card-actions align="right">

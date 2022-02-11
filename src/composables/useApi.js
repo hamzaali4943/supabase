@@ -47,6 +47,14 @@ export default function useApi() {
   }
 
   const update = async (table, form) => {
+    if (form.comments) {
+      let previous = await getCommentsById(table, form.ord_id)
+      if (previous.comments)
+        previous = previous.comments;
+      else
+        previous = []
+      form.comments = [...previous, form.comments]
+    }
     const { data, error } = await supabase
       .from(table)
       .update({ ...form })

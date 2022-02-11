@@ -179,6 +179,12 @@
                 <body>
                   order closed on : {{ details.ord_closeAt }}
                 </body>
+                <body v-if="details.ordtrl">
+                order trial : true
+                </body>
+                <body v-else>
+                order trial : false
+                </body>
                 <q-table
                   class="q-ma-xl"
                   flat
@@ -187,6 +193,17 @@
                   :pagination="{ rowsPerPage: 25 }"
                   :rows-per-page-options="[25, 50, 100]"
                 />
+                <div>
+                  <body class="text-weight-bolder text-black">Comments : </body>
+                  <body v-if="details.comments">
+                  <body v-for="comment in details.comments"  :key="comment.created">
+                  {{comment.comment}} ,
+                  </body>
+                  </body>
+                  <body v-else>
+                  No comment added till now
+                  </body>
+                </div>
               </q-card-section>
 
               <q-card-actions align="right">
@@ -199,7 +216,6 @@
             <q-card class="q-pa-lg">
               <q-card-section>
                 <q-input
-                  model-value=""
                   v-model="commentValue"
                   label="Add your Comment"
                 ></q-input>
@@ -228,7 +244,7 @@ import useApi from "src/composables/UseApi";
 import useNotify from "src/composables/UseNotify";
 import moment from "moment";
 
-const { post, getById, update, list, createOrUpdate, customLogic, getByDate } =
+const { post, getById, update, list, createOrUpdate, customLogic, getByDate,getCommentsById } =
   useApi();
 export default {
   name: "displayOrder",
@@ -246,7 +262,8 @@ export default {
       commentValue = ref(""),
       order_id = ref(null),
       details = ref(null),
-      checkDetails = ref(false);
+      checkDetails = ref(false),
+      commentDetails=ref(null);
 
     const datechecker = async () => {
       try {
@@ -274,8 +291,10 @@ export default {
       try {
         showLoader();
         details.value = await getById("ordhdr", value);
+        //commentDetails.value=await getCommentsById('ordhdr',value);
         hideLoader();
         checkDetails.value = true;
+        //console.log(commentDetails.value);
         console.log(details.value);
       } catch (error) {
         notifyError(error.message);
@@ -290,7 +309,11 @@ export default {
         },
         ord_id: order_id.value,
       });
-      if (res) notifySuccess("Updated Successfully");
+      if (res)
+      {
+        commentValue.value='';
+        notifySuccess("Updated Successfully");
+      }
       else notifyError("Error in Updating");
     };
 
@@ -310,6 +333,7 @@ export default {
       seeDetails,
       details,
       checkDetails,
+      commentDetails
     };
   },
 };

@@ -24,6 +24,16 @@ export default function useApi() {
   }
 
 
+  const getCommentsById = async (table, id) => {
+    const { data, error } = await supabase
+      .from(table)
+      .select(`comments`)
+      .eq('ord_id', id)
+    if (error) throw error
+    return data[0]
+  }
+
+
   const post = async (table, form) => {
     const { data, error } = await supabase
       .from(table)
@@ -92,10 +102,11 @@ export default function useApi() {
 
   const getByDate = async (table = 'ordhdr', startDate, endDate, company) => {
     if (!startDate) {
-      startDate = moment('12/4/2021', "DD-MM-YYYY").subtract(0, 'days').format("DD-MM-YYYY");
+      startDate = moment('12/4/2021', "DD-MM-YYYY").format("DD-MM-YYYY");
     }
     if (!endDate)
       endDate = moment().format("DD-MM-YYYY");
+
     let query = supabase
       .from(table)
       .select('ord_id, ord_num, ord_createAt, ord_amtTotal, comments')
@@ -107,9 +118,12 @@ export default function useApi() {
     const { data, error } = await query;
 
     if (error) throw error
-    data.forEach(e=>{
-      if(e.comments!=null)
-        e.comments=e.comments.comment;
+    data.forEach(e => {
+      if (e.comments)
+        e.comments = true;
+      else
+        e.comments = false;
+
     })
     return data
   }
@@ -118,6 +132,7 @@ export default function useApi() {
   return {
     list,
     getById,
+    getCommentsById,
     post,
     update,
     remove,

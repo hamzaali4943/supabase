@@ -180,10 +180,10 @@
                   order closed on : {{ details.ord_closeAt }}
                 </body>
                 <body v-if="details.ordtrl">
-                order trial : true
+                  order trial : true
                 </body>
                 <body v-else>
-                order trial : false
+                  order trial : false
                 </body>
                 <q-table
                   class="q-ma-xl"
@@ -194,14 +194,19 @@
                   :rows-per-page-options="[25, 50, 100]"
                 />
                 <div>
-                  <body class="text-weight-bolder text-black">Comments : </body>
-                  <body v-if="details.comments">
-                  <body v-for="comment in details.comments"  :key="comment.created">
-                  {{comment.comment}} ,
+                  <body class="text-weight-bolder text-black">
+                    Comments :
                   </body>
+                  <body v-if="details.comments">
+                    <body
+                      v-for="comment in details.comments"
+                      :key="comment.created"
+                    >
+                      {{ comment.comment }} ,
+                    </body>
                   </body>
                   <body v-else>
-                  No comment added till now
+                    No comment added till now
                   </body>
                 </div>
               </q-card-section>
@@ -244,15 +249,23 @@ import useApi from "src/composables/UseApi";
 import useNotify from "src/composables/UseNotify";
 import moment from "moment";
 
-const { post, getById, update, list, createOrUpdate, customLogic, getByDate,getCommentsById } =
-  useApi();
+const {
+  post,
+  getById,
+  update,
+  list,
+  createOrUpdate,
+  customLogic,
+  getByDate,
+  getCommentsById,
+} = useApi();
 export default {
   name: "displayOrder",
 
   setup() {
     const { notifyError, notifySuccess, showLoader, hideLoader } = useNotify();
 
-    const companies = ref(["abc"]),
+    const companies = ref(["ABC"]),
       datecheck = ref(false),
       selected = ref(""),
       enddate = ref(moment().format("DD-MM-YYYY")),
@@ -263,7 +276,7 @@ export default {
       order_id = ref(null),
       details = ref(null),
       checkDetails = ref(false),
-      commentDetails=ref(null);
+      commentDetails = ref(null);
 
     const datechecker = async () => {
       try {
@@ -309,12 +322,10 @@ export default {
         },
         ord_id: order_id.value,
       });
-      if (res)
-      {
-        commentValue.value='';
+      if (res) {
+        commentValue.value = "";
         notifySuccess("Updated Successfully");
-      }
-      else notifyError("Error in Updating");
+      } else notifyError("Error in Updating");
     };
 
     return {
@@ -333,7 +344,7 @@ export default {
       seeDetails,
       details,
       checkDetails,
-      commentDetails
+      commentDetails,
     };
   },
 };

@@ -1,5 +1,4 @@
 import useSupabase from 'src/boot/supabase'
-import shortid from 'shortid'
 import moment from 'moment'
 export default function useApi() {
   const { supabase } = useSupabase()
@@ -103,7 +102,7 @@ export default function useApi() {
         success = success - ordtrl.length
       }
     }
-    await post("logs", { id: shortid.generate(), filename: file })
+    await post("logs", { filename: file })
     await createOrUpdate(table, items);
     return { success: success }
   }

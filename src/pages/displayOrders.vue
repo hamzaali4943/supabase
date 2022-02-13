@@ -245,7 +245,7 @@
 
 <script>
 import { ref, defineComponent, onMounted } from "vue";
-import useApi from "src/composables/UseApi";
+import useApi from "src/composables/useApi";
 import useNotify from "src/composables/UseNotify";
 import moment from "moment";
 

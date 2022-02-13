@@ -22,6 +22,7 @@
           label="Password"
           v-model="form.password"
           lazy-rules
+          type="password"
           :rules="[
             (val) =>
               (val && val.length >= 6) ||
@@ -65,7 +66,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const { register } = useAuthUser();
-    const { notifyError, notifySuccess } = useNotify();
+    const { notifyError, notifySuccess,hideLoader,showLoader } = useNotify();
 
     const form = ref({
       name: "",
@@ -75,10 +76,14 @@ export default defineComponent({
 
     const handleRegister = async () => {
       try {
+        showLoader();
         await register(form.value);
+        hideLoader();
         notifySuccess("Register successfully!");
         router.push({ name: "index" });
       } catch (error) {
+        showLoader();
+        hideLoader();
         notifyError(error.message);
       }
     };

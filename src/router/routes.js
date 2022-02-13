@@ -14,7 +14,7 @@ const routes = [
     children: [
       { path: 'index', name: "index", component: () => import('pages/Index.vue') },
       { path: 'order', name: 'order', component: () => import('pages/order.vue') },
-      { path: 'display', name: 'order', component: () => import('pages/displayOrders.vue') },
+      { path: 'display', name: 'displayOrder', component: () => import('pages/displayOrders.vue') },
     ],
     meta: {
       requiresAuth: true

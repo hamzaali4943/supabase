@@ -50,20 +50,20 @@ const linksList = [
   {
     title: "Home",
     caption: "",
-    icon: "mdi-home",
-    routeName: "index",
+    icon: 'home',
+    link: "http://localhost:8080/#/index",
   },
   {
     title: "Import",
     caption: "",
-    icon: "mdi-shape-outline",
-    routeName: "order",
+    icon: "publish",
+    link: "http://localhost:8080/#/order",
   },
   {
     title: "Display",
     caption: "",
-    icon: "mdi-archive",
-    routeName: "display",
+    icon: "description",
+    link: "http://localhost:8080/#/display",
   },
 ];
 

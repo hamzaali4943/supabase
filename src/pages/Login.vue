@@ -13,6 +13,7 @@
 
         <q-input
           label="Password"
+          type="password"
           v-model="form.password"
           lazy-rules
           :rules="[(val) => (val && val.length > 0) || 'Password is required']"
@@ -57,7 +58,7 @@ export default defineComponent({
 
     const { login, isLoggedIn } = useAuthUser();
 
-    const { notifyError, notifySuccess } = useNotify();
+    const { notifyError, notifySuccess,showLoader,hideLoader } = useNotify();
 
     const form = ref({
       email: "",
@@ -72,10 +73,14 @@ export default defineComponent({
 
     const handleLogin = async () => {
       try {
+        showLoader();
         await login(form.value);
+        hideLoader();
         notifySuccess("Login successfully!");
         router.push({ name: "index" });
       } catch (error) {
+        showLoader();
+        hideLoader();
         notifyError(error.message);
       }
     };

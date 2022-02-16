@@ -244,7 +244,7 @@ export default defineComponent({
       try {
         if (
           csvfile.value[0].ord_id == "ord_id" ||
-          csvfile.value[0].upi == "upi"
+          csvfile.value[0].orl_upi == "upi"
         ) {
           csvfile.value.shift();
         }

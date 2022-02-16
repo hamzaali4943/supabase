@@ -33,27 +33,37 @@ export default function useApi() {
   const getUnmatchOdritm = async (table = "orditm") => {
     const { data, error } = await supabase
       .from(table)
-      .select(`orl_upi,ord_createAt,ord_num,orl_itemName`)
+      .select(`orl_upi,orl_itemName,ord_id ,
+      ordhdr:ordhdr ( ord_createAt,ord_num)`)
       .is('matchAt', null)
       .not('orl_upi', 'eq', null)
     if (error) throw error
     return data
   }
-
   const autoMatchSingle = async (table = "orditm", id = "10833143496877") => {
     const { data, error } = await supabase
       .from(table)
-      .select(`* ,
-      fasitm:fasitm (orl_upi)`)
+      .select(`orl_upi`)
       .eq('orl_id', id)
     if (error) throw error
-    console.log(data[0])
-    if (data[0]) {
-      await update("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: data[0].ord_id })
-      await update("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+    // console.log(data[0])
+    if (data) {
+      const { data1, error1 } = await supabase
+        .from("fasitm")
+        .select(`orl_upi`)
+        .eq('orl_upi', data[0].orl_upi)
+      if (error1) throw error1
+      if (data1) {
+        await updateMatchAt("fasitm", { orl_upi: data1[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: data1[0].orl_id })
+        await updateMatchAt("orditm", { orl_upi: data1[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+      } else {
+        return false
+      }
     }
-    return data[0]
+    return data
   }
+
+
 
   const getMatchFasitm = async (table = 'fasitm', startDate, endDate, company) => {
     if (!startDate) {

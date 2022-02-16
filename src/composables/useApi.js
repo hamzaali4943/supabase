@@ -40,16 +40,16 @@ export default function useApi() {
     if (error) throw error
     return data
   }
-  const autoMatchSingle = async (table = "orditm", id = "10833143562413") => {
+  const autoMatchSingle = async (table = "orditm", id = '10833143562413') => {
     const { data, error } = await supabase
       .from(table)
-      .select(`orl_upi`)
+      .select(`orl_upi,orl_id`)
       .eq('orl_id', id)
     if (error) throw error
     if (data) {
       let res = await getFasByUpi("fasitm", data[0].orl_upi)
       if (res[0]) {
-        await updateMatchAt("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: id })
+        await updateMatchAt("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: data[0].orl_id });
         await updateMatchAt("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
         return true
       } else {
@@ -95,7 +95,7 @@ export default function useApi() {
 
   const getMatchFasitm = async (table = 'fasitm', startDate, endDate, company) => {
     if (!startDate) {
-      startDate = moment('2021/30/11', "YYYY-MM-DD").format("YYYY-MM-DD");
+      startDate = moment('2020/11/30', "YYYY-MM-DD").format("YYYY-MM-DD");
     }
     if (!endDate)
       endDate = moment().format("YYYY-MM-DD");
@@ -103,14 +103,13 @@ export default function useApi() {
     let query = supabase
       .from(table)
       .select('*')
-      .not('matchAt', 'eq', null)
       .order('matchAt', { ascending: false })
     if (company) { query = query.eq('company', company) }
     if (startDate) { query = query.gte('matchAt', startDate.toString()) }
     if (endDate) { query = query.lt('matchAt', endDate.toString()) }
 
     const { data, error } = await query;
-
+    // console.log(data)
     if (error) throw error
     return data
   }
@@ -137,6 +136,7 @@ export default function useApi() {
   }
 
   const updateMatchAt = async (table, form) => {
+    console.log("form", form)
     const { data, error } = await supabase
       .from(table)
       .update({ ...form })

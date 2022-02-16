@@ -33,37 +33,65 @@ export default function useApi() {
   const getUnmatchOdritm = async (table = "orditm") => {
     const { data, error } = await supabase
       .from(table)
-      .select(`orl_upi,orl_itemName,ord_id ,
+      .select(`orl_upi,orl_itemName,orl_id ,
       ordhdr:ordhdr ( ord_createAt,ord_num)`)
       .is('matchAt', null)
       .not('orl_upi', 'eq', null)
     if (error) throw error
     return data
   }
-  const autoMatchSingle = async (table = "orditm", id = "10833143496877") => {
+  const autoMatchSingle = async (table = "orditm", id = "10833143562413") => {
     const { data, error } = await supabase
       .from(table)
       .select(`orl_upi`)
       .eq('orl_id', id)
     if (error) throw error
-    // console.log(data[0])
     if (data) {
-      const { data1, error1 } = await supabase
-        .from("fasitm")
-        .select(`orl_upi`)
-        .eq('orl_upi', data[0].orl_upi)
-      if (error1) throw error1
-      if (data1) {
-        await updateMatchAt("fasitm", { orl_upi: data1[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: data1[0].orl_id })
-        await updateMatchAt("orditm", { orl_upi: data1[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+      let res = await getFasByUpi("fasitm", data[0].orl_upi)
+      if (res[0]) {
+        await updateMatchAt("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: id })
+        await updateMatchAt("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+        return true
       } else {
         return false
       }
     }
+    return false;
+  }
+
+  const getFasByUpi = async (table = "fasitm", upi) => {
+    const { data, error } = await supabase
+      .from(table)
+      .select(`*`)
+      .eq('orl_upi', upi)
+    if (error) throw error
     return data
   }
 
 
+
+  const autoMatch = async (table = "orditm") => {
+    let unmatchOdritm = await getUnmatchOdritm();
+    let unmatchFasitm = await getUnmatchFasitm();
+    let fasitm = [], orditm = [];
+    if (unmatchOdritm.length && unmatchFasitm.length) {
+      // console.log(unmatchFasitm)
+      // console.log(unmatchOdritm)
+      const matched = unmatchOdritm.filter(n => unmatchFasitm.some(n2 => n.orl_upi == n2.orl_upi));
+      // console.log(matched)
+      for (let index = 0; index < matched.length; index++) {
+        const element = matched[index];
+        fasitm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: element.orl_id })
+        orditm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+      }
+    }
+    if (fasitm.length) {
+      let fasUpdated = await createOrUpdate("fasitm", fasitm)
+      let ordUpdated = await createOrUpdate("orditm", orditm)
+      return { fasUpdated, ordUpdated }
+    }
+    return unmatchOdritm;
+  }
 
   const getMatchFasitm = async (table = 'fasitm', startDate, endDate, company) => {
     if (!startDate) {
@@ -225,6 +253,10 @@ export default function useApi() {
     getMatchFasitm,
     getUnmatchFasitm,
     getUnmatchOdritm,
-    autoMatchSingle
+    autoMatchSingle,
+    autoMatch
   }
 }
+
+
+

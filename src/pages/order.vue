@@ -54,7 +54,7 @@
           <vue-csv-import
             v-model="csvfile"
             :fields="{
-              upi: { required: true, label: 'upi' },
+              orl_upi: { required: true, label: 'upi' },
               invDate: { required: true, label: 'invDate' },
               invRef: { required: true, label: 'invRef' },
               poRef: { required: true, label: 'poRef' },
@@ -80,8 +80,8 @@
               ord_id: { required: true, label: 'ord_id' },
               ord_num: { required: true, label: 'ord_num' },
               orl_id: { required: true, label: 'orl_id' },
-              orl_item_name: { required: true, label: 'orl_item_name' },
-              orl_prod_id: { required: true, label: 'orl_prod_id' },
+              orl_itemName: { required: true, label: 'orl_itemName' },
+              orl_prodId: { required: true, label: 'orl_prodId' },
               orl_price: { required: true, label: 'orl_price' },
               orl_refund: { required: true, label: 'orl_refund' },
               orl_tax: { required: true, label: 'orl_tax' },
@@ -286,10 +286,9 @@ export default defineComponent({
             row.ord_id = row.ord_id == "" ? null : row.ord_id;
             row.ord_num = row.ord_num == "" ? null : parseInt(row.ord_num);
             row.orl_id = row.orl_id == "" ? null : row.orl_id;
-            row.orl_item_name =
-              row.orl_item_name == "" ? null : row.orl_item_name;
-            row.orl_prod_id =
-              row.orl_prod_id == "" ? null : parseInt(row.orl_prod_id);
+            row.orl_itemName = row.orl_itemName == "" ? null : row.orl_itemName;
+            row.orl_prodId =
+              row.orl_prodId == "" ? null : parseInt(row.orl_prodId);
             row.orl_price =
               row.orl_price == "" ? null : parseFloat(row.orl_price);
             row.orl_refund =
@@ -304,7 +303,7 @@ export default defineComponent({
         else if (selected.value.value == "fasitm")
           csvfile.value.forEach((row) => {
             row.company = company.value;
-            row.upi = row.upi == "" ? null : row.upi;
+            row.orl_upi = row.orl_upi == "" ? null : row.orl_upi;
             row.invDate = row.invDate == "" ? null : row.invDate;
             row.invRef = row.invRef == "" ? null : row.invRef;
             row.poRef = row.poRef == "" ? null : row.poRef;

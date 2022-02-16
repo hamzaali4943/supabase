@@ -26,7 +26,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="startdate" mask="DD-MM-YYYY">
+                <q-date v-model="startdate" mask="YYYY-MM-DD">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -45,7 +45,7 @@
                 transition-show="scale"
                 transition-hide="scale"
               >
-                <q-date v-model="enddate" mask="DD-MM-YYYY">
+                <q-date v-model="enddate" mask="YYYY-MM-DD">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -268,8 +268,8 @@ export default {
     const companies = ref(["ABC"]),
       datecheck = ref(false),
       selected = ref(""),
-      enddate = ref(moment().format("DD-MM-YYYY")),
-      startdate = ref(moment().subtract(7, "days").format("DD-MM-YYYY")),
+      enddate = ref(moment().format("YYYY-MM-DD")),
+      startdate = ref(moment().subtract(7, "days").format("YYYY-MM-DD")),
       display = ref([]),
       comment = ref(false),
       commentValue = ref(""),
@@ -318,7 +318,7 @@ export default {
       let res = await update("ordhdr", {
         comments: {
           comment: commentValue.value,
-          created: moment().format("DD-MM-YYYY"),
+          created: moment().format("YYYY-MM-DD"),
         },
         ord_id: order_id.value,
       });

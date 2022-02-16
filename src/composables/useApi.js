@@ -21,8 +21,61 @@ export default function useApi() {
     if (error) throw error
     return data[0]
   }
+  const getUnmatchFasitm = async (table = "fasitm") => {
+    const { data, error } = await supabase
+      .from(table)
+      .select(`orl_upi,invDate, invRef, itemName`)
+      .is('matchAt', null)
+    if (error) throw error
+    return data
+  }
 
+  const getUnmatchOdritm = async (table = "orditm") => {
+    const { data, error } = await supabase
+      .from(table)
+      .select(`orl_upi,ord_createAt,ord_num,orl_itemName`)
+      .is('matchAt', null)
+      .not('orl_upi', 'eq', null)
+    if (error) throw error
+    return data
+  }
 
+  const autoMatchSingle = async (table = "orditm", id = "10833143496877") => {
+    const { data, error } = await supabase
+      .from(table)
+      .select(`* ,
+      fasitm:fasitm (orl_upi)`)
+      .eq('orl_id', id)
+    if (error) throw error
+    console.log(data[0])
+    if (data[0]) {
+      await update("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: data[0].ord_id })
+      await update("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+    }
+    return data[0]
+  }
+
+  const getMatchFasitm = async (table = 'fasitm', startDate, endDate, company) => {
+    if (!startDate) {
+      startDate = moment('2021/30/11', "YYYY-MM-DD").format("YYYY-MM-DD");
+    }
+    if (!endDate)
+      endDate = moment().format("YYYY-MM-DD");
+
+    let query = supabase
+      .from(table)
+      .select('*')
+      .not('matchAt', 'eq', null)
+      .order('matchAt', { ascending: false })
+    if (company) { query = query.eq('company', company) }
+    if (startDate) { query = query.gte('matchAt', startDate.toString()) }
+    if (endDate) { query = query.lt('matchAt', endDate.toString()) }
+
+    const { data, error } = await query;
+
+    if (error) throw error
+    return data
+  }
   const getCommentsById = async (table, id) => {
     const { data, error } = await supabase
       .from(table)
@@ -41,6 +94,15 @@ export default function useApi() {
           ...form
         }
       ])
+    if (error) throw error
+    return data
+  }
+
+  const updateMatchAt = async (table, form) => {
+    const { data, error } = await supabase
+      .from(table)
+      .update({ ...form })
+      .match({ orl_upi: form.orl_upi })
     if (error) throw error
     return data
   }
@@ -83,11 +145,11 @@ export default function useApi() {
   }
 
   const customLogic = async (table, items, file) => {
-    let ids = items.map(e => e.ord_id);
     let success = items.length
 
     //get list of matching ids
     if (table == 'ordhdr') {
+      let ids = items.map(e => e.ord_id);
       const { data, error } = await supabase
         .from(table)
         .select('ord_id')
@@ -101,7 +163,11 @@ export default function useApi() {
         if (error) throw error
         success = success - ordtrl.length
       }
+    } else if (table == 'fasitm') {
+      items = items.filter(item => item.orl_upi != null);
+      success = items.length;
     }
+
     await post("logs", { filename: file })
     await createOrUpdate(table, items);
     return { success: success }
@@ -109,10 +175,10 @@ export default function useApi() {
 
   const getByDate = async (table = 'ordhdr', startDate, endDate, company) => {
     if (!startDate) {
-      startDate = moment('12/4/2021', "DD-MM-YYYY").format("DD-MM-YYYY");
+      startDate = moment('2021/4/12', "YYYY-MM-DD").format("YYYY-MM-DD");
     }
     if (!endDate)
-      endDate = moment().format("DD-MM-YYYY");
+      endDate = moment().format("YYYY-MM-DD");
 
     let query = supabase
       .from(table)
@@ -145,6 +211,10 @@ export default function useApi() {
     remove,
     createOrUpdate,
     customLogic,
-    getByDate
+    getByDate,
+    getMatchFasitm,
+    getUnmatchFasitm,
+    getUnmatchOdritm,
+    autoMatchSingle
   }
 }

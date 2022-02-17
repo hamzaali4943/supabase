@@ -33,7 +33,7 @@ export default function useApi() {
   const getUnmatchOdritm = async (table = "orditm") => {
     const { data, error } = await supabase
       .from(table)
-      .select(`orl_upi,orl_itemName,orl_id ,
+      .select(`orl_upi,orl_itemName,orl_id,ord_id ,
       ordhdr:ordhdr ( ord_createAt,ord_num)`)
       .is('matchAt', null)
       .not('orl_upi', 'eq', null)
@@ -81,13 +81,16 @@ export default function useApi() {
       // console.log(matched)
       for (let index = 0; index < matched.length; index++) {
         const element = matched[index];
+        // issue in updating fasitm.orl_id
         fasitm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: element.orl_id })
-        orditm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+        orditm.push({ ord_id: element.ord_id, orl_id: element.orl_id, orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD") })
       }
     }
     if (fasitm.length) {
       let fasUpdated = await createOrUpdate("fasitm", fasitm)
       let ordUpdated = await createOrUpdate("orditm", orditm)
+      // console.log(fasitm)
+      // console.log(orditm)
       return { fasUpdated, ordUpdated }
     }
     return unmatchOdritm;
@@ -106,7 +109,7 @@ export default function useApi() {
       .order('matchAt', { ascending: false })
     if (company) { query = query.eq('company', company) }
     if (startDate) { query = query.gte('matchAt', startDate.toString()) }
-    if (endDate) { query = query.lt('matchAt', endDate.toString()) }
+    if (endDate) { query = query.lte('matchAt', endDate.toString()) }
 
     const { data, error } = await query;
     // console.log(data)
@@ -224,7 +227,7 @@ export default function useApi() {
       .order('ord_id', { ascending: false })
     if (company) { query = query.eq('company', company) }
     if (startDate) { query = query.gte('ord_createAt', startDate.toString()) }
-    if (endDate) { query = query.lt('ord_createAt', endDate.toString()) }
+    if (endDate) { query = query.lte('ord_createAt', endDate.toString()) }
 
     const { data, error } = await query;
 

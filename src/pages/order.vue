@@ -49,29 +49,6 @@
             <vue-csv-map />
           </vue-csv-import>
         </div>
-        <div v-if="selected.value == 'fasitm'" class="q-px-xl">
-          <b>FAS Lines </b><br />
-          <vue-csv-import
-            v-model="csvfile"
-            :fields="{
-              orl_upi: { required: true, label: 'upi' },
-              invDate: { required: true, label: 'invDate' },
-              invRef: { required: true, label: 'invRef' },
-              poRef: { required: true, label: 'poRef' },
-              woRef: { required: true, label: 'woRef' },
-              itemNum: { required: true, label: 'itemNum' },
-              itemName: { required: true, label: 'itemName' },
-              invAmt: { required: true, label: 'invAmt' },
-              shipDate: { required: true, label: 'shipDate' },
-              containerRef: { required: true, label: 'containerRef' },
-            }"
-          >
-            <vue-csv-toggle-headers />
-            <vue-csv-errors />
-            <vue-csv-input @change="setFileName" />
-            <vue-csv-map />
-          </vue-csv-import>
-        </div>
         <div v-if="selected.value == 'orditm'" class="q-px-xl">
           <b>Order Lines</b><br />
           <vue-csv-import
@@ -163,28 +140,6 @@
         </template>
       </q-table>
 
-      <q-table
-        v-if="selected.value == 'fasitm'"
-        class="q-ma-xl"
-        flat
-        title="Import Preview"
-        :rows="csvfile"
-        row-key="upi"
-        :pagination="{ rowsPerPage: 25 }"
-        :rows-per-page-options="[25, 50, 100]"
-      >
-        <template v-slot:top>
-          <h5>Import Preview</h5>
-          <q-space />
-          <q-btn
-            class="no-shadow"
-            color="blue-12"
-            v-show="company"
-            @click="onSubmit"
-            label="Import data"
-          />
-        </template>
-      </q-table>
     </div>
   </q-page>
 </template>
@@ -231,10 +186,7 @@ export default defineComponent({
           value: "orditm",
           label: "Order Item",
         },
-        {
-          value: "fasitm",
-          label: "FAS Item",
-        },
+
       ],
       companies = ["ABC"];
     const onSubmit = async () => {
@@ -243,8 +195,7 @@ export default defineComponent({
 
       try {
         if (
-          csvfile.value[0].ord_id == "ord_id" ||
-          csvfile.value[0].orl_upi == "upi"
+          csvfile.value[0].ord_id == "ord_id"
         ) {
           csvfile.value.shift();
         }
@@ -299,20 +250,6 @@ export default defineComponent({
             row.orl_sku = row.orl_sku == "" ? null : row.orl_sku;
             row.orl_sku1 = row.orl_sku1 == "" ? null : row.orl_sku1;
             row.orl_sku2 = row.orl_sku2 == "" ? null : row.orl_sku2;
-          });
-        else if (selected.value.value == "fasitm")
-          csvfile.value.forEach((row) => {
-            row.company = company.value;
-            row.orl_upi = row.orl_upi == "" ? null : row.orl_upi;
-            row.invDate = row.invDate == "" ? null : row.invDate;
-            row.invRef = row.invRef == "" ? null : row.invRef;
-            row.poRef = row.poRef == "" ? null : row.poRef;
-            row.woRef = row.woRef == "" ? null : parseInt(row.woRef);
-            row.itemNum = row.itemNum == "" ? null : row.itemNum;
-            row.itemName = row.itemName == "" ? null : row.itemName;
-            row.invAmt = row.invAmt == "" ? null : parseFloat(row.invAmt);
-            row.shipDate = row.shipDate == "" ? null : row.shipDate;
-            row.containerRef = row.containerRef == "" ? null : row.containerRef;
           });
         showLoader();
         let res = await customLogic(

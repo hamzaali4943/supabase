@@ -16,7 +16,8 @@ const routes = [
       { path: 'order', name: 'order', component: () => import('pages/order.vue') },
       { path: 'display', name: 'displayOrder', component: () => import('pages/displayOrders.vue')},
       { path: 'matchfas', name: 'MatchFas', component: () => import('pages/MatchFas.vue')},
-      { path: 'orderfas', name: 'OrderFas', component: () => import('pages/orderFas.vue')}
+      { path: 'orderfas', name: 'OrderFas', component: () => import('pages/orderFas.vue')},
+      { path: 'fas', name: 'Fas', component: () => import('pages/fas.vue')}
     ],
     meta: {
       requiresAuth: true

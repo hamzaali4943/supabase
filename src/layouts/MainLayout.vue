@@ -77,6 +77,12 @@ const linksList = [
     icon: "fact_check",
     link: "http://localhost:8080/#/orderfas",
   },
+  {
+    title: "Displaying fas",
+    caption: "",
+    icon: "monitor",
+    link: "http://localhost:8080/#/fas",
+  },
 ];
 
 import { defineComponent, ref } from "vue";

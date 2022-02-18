@@ -43,13 +43,13 @@ export default function useApi() {
   const autoMatchSingle = async (table = "orditm", id = '10833143562413') => {
     const { data, error } = await supabase
       .from(table)
-      .select(`orl_upi,orl_id`)
+      .select(`orl_upi,ord_id`)
       .eq('orl_id', id)
     if (error) throw error
     if (data) {
       let res = await getFasByUpi("fasitm", data[0].orl_upi)
       if (res[0]) {
-        await updateMatchAt("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: data[0].orl_id });
+        await updateMatchAt("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), ord_id: data[0].ord_id });
         await updateMatchAt("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
         return true
       } else {
@@ -82,11 +82,12 @@ export default function useApi() {
       for (let index = 0; index < matched.length; index++) {
         const element = matched[index];
         // issue in updating fasitm.orl_id
-        fasitm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD"), orl_id: element.orl_id })
+        fasitm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD"), ord_id: element.ord_id })
         orditm.push({ ord_id: element.ord_id, orl_id: element.orl_id, orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD") })
       }
     }
     if (fasitm.length) {
+      fasitm = [...new Map(fasitm.map(item => [item['orl_upi'], item])).values()];
       let fasUpdated = await createOrUpdate("fasitm", fasitm)
       let ordUpdated = await createOrUpdate("orditm", orditm)
       // console.log(fasitm)
@@ -260,6 +261,12 @@ export default function useApi() {
     autoMatch
   }
 }
+
+
+
+
+
+
 
 
 

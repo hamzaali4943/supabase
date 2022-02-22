@@ -24,7 +24,7 @@ export default function useApi() {
   const getUnmatchFasitm = async (table = "fasitm") => {
     const { data, error } = await supabase
       .from(table)
-      .select(`orl_upi,invDate, invRef, itemName`)
+      .select(`orl_upi,invDate, invRef, itemName,fas_id`)
       .is('matchAt', null)
     if (error) throw error
     return data
@@ -40,7 +40,7 @@ export default function useApi() {
     if (error) throw error
     return data
   }
-  const autoMatchSingle = async (table = "orditm", id = '10833143562413') => {
+  const autoMatchSingle = async (table = "orditm", id) => {
     const { data, error } = await supabase
       .from(table)
       .select(`orl_upi,ord_id`)
@@ -50,7 +50,7 @@ export default function useApi() {
       let res = await getFasByUpi("fasitm", data[0].orl_upi)
       if (res[0]) {
         await updateMatchAt("fasitm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), ord_id: data[0].ord_id });
-        await updateMatchAt("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+        await updateMatchAt("orditm", { orl_upi: data[0].orl_upi, matchAt: moment().format("YYYY-MM-DD"), fas_id: res[0].fas_id })
         return true
       } else {
         return false
@@ -77,21 +77,31 @@ export default function useApi() {
     if (unmatchOdritm.length && unmatchFasitm.length) {
       // console.log(unmatchFasitm)
       // console.log(unmatchOdritm)
-      const matched = unmatchOdritm.filter(n => unmatchFasitm.some(n2 => n.orl_upi == n2.orl_upi));
+      // const matched = unmatchOdritm.filter(n => unmatchFasitm.some(n2 => n.orl_upi == n2.orl_upi));
+
+      unmatchOdritm.forEach(n => {
+        unmatchFasitm.forEach(n2 => {
+          if (n.orl_upi == n2.orl_upi) {
+            fasitm.push({ orl_upi: n.orl_upi, matchAt: moment().format("YYYY-MM-DD"), ord_id: n.ord_id, fas_id: n2.fas_id })
+            orditm.push({ ord_id: n.ord_id, orl_id: n.orl_id, orl_upi: n.orl_upi, matchAt: moment().format("YYYY-MM-DD"), fas_id: n2.fas_id })
+            return;
+          }
+        })
+      });
+
       // console.log(matched)
-      for (let index = 0; index < matched.length; index++) {
-        const element = matched[index];
-        // issue in updating fasitm.orl_id
-        fasitm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD"), ord_id: element.ord_id })
-        orditm.push({ ord_id: element.ord_id, orl_id: element.orl_id, orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD") })
-      }
+      // for (let index = 0; index < matched.length; index++) {
+      //   const element = matched[index];
+      //   // issue in updating fasitm.orl_id
+      //   fasitm.push({ orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD"), ord_id: element.ord_id })
+      //   orditm.push({ ord_id: element.ord_id, orl_id: element.orl_id, orl_upi: element.orl_upi, matchAt: moment().format("YYYY-MM-DD") })
+      // }
     }
     if (fasitm.length) {
       fasitm = [...new Map(fasitm.map(item => [item['orl_upi'], item])).values()];
       let fasUpdated = await createOrUpdate("fasitm", fasitm)
       let ordUpdated = await createOrUpdate("orditm", orditm)
-      // console.log(fasitm)
-      // console.log(orditm)
+
       return { fasUpdated, ordUpdated }
     }
     return unmatchOdritm;
@@ -194,20 +204,17 @@ export default function useApi() {
       let ids = items.map(e => e.ord_id);
       const { data, error } = await supabase
         .from(table)
-        .select('ord_id')
+        .select('ord_id,ord_updateAt')
         .in('ord_id', ids)
       if (error) throw error
       if (data.length) {
-        const ordtrl = items.filter(a => data.some(b => a.ord_id == b.ord_id));
+        const ordtrl = items.filter(a => data.some(b => (a.ord_id == b.ord_id) && (new Date(a.ord_updateAt) > new Date(b.ord_updateAt))));
         const { data1, error } = await supabase
           .from('ordtrl')
           .upsert(ordtrl)
         if (error) throw error
         success = success - ordtrl.length
       }
-    } else if (table == 'fasitm') {
-      items = items.filter(item => item.orl_upi != null);
-      success = items.length;
     }
 
     await post("logs", { filename: file })

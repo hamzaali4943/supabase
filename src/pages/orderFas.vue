@@ -88,9 +88,14 @@ export default {
       try {
         showLoader();
         console.log(val);
-        await autoMatchSingle("orditm", val);
+        let res = await autoMatchSingle("orditm", val);
         hideLoader();
-        window.location.href = "http://localhost:8080/#/matchfas";
+        if (res) {
+          notifySuccess("Record matched successfully");
+          window.location.href = "http://localhost:8080/#/matchfas";
+        } else {
+          notifyError("Cannot find record to match");
+        }
       } catch (error) {
         notifyError(error.message);
       }

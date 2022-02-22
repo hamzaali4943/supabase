@@ -122,14 +122,13 @@ export default defineComponent({
       // sample test only to import ordhdr
 
       try {
-        if (
-          csvfile.value[0].orl_upi == "upi"
-        ) {
+        if (csvfile.value[0].orl_upi == "upi") {
           csvfile.value.shift();
         }
         if (selected.value.value == "fasitm")
           csvfile.value.forEach((row) => {
             row.company = company.value;
+            row.fas_id = row.poRef + "_" + row.woRef + "_" + row.itemNum;
             row.orl_upi = row.orl_upi == "" ? null : row.orl_upi;
             row.invDate = row.invDate == "" ? null : row.invDate;
             row.invRef = row.invRef == "" ? null : row.invRef;

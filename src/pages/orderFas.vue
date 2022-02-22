@@ -63,11 +63,11 @@
 
 <script>
 import { ref, defineComponent, onMounted } from "vue";
-import useApi from "src/composables/useApi";
+import useMatch from "src/composables/useMatch";
 import useNotify from "src/composables/UseNotify";
 
 const { getUnmatchFasitm, getUnmatchOdritm, autoMatchSingle, autoMatch } =
-  useApi();
+  useMatch();
 export default {
   name: "OrderFas",
 

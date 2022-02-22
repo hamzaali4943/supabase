@@ -70,19 +70,17 @@
       :pagination="{ rowsPerPage: 25 }"
       :rows-per-page-options="[25, 50, 100]"
     />
-
   </q-page>
 </template>
 
 <script>
 import { ref, defineComponent, onMounted } from "vue";
-import useApi from "src/composables/useApi";
+import useMatch from "src/composables/useMatch";
+
 import useNotify from "src/composables/UseNotify";
 import moment from "moment";
 
-const {
-  getMatchFasitm
-} = useApi();
+const { getMatchFasitm } = useMatch();
 export default {
   name: "MatchedFas",
 
@@ -91,23 +89,27 @@ export default {
 
     const companies = ref(["ABC"]),
       matchEnd = ref(moment().format("YYYY-MM-DD")),
-      matchStart=ref(moment().subtract(7,'days').format('YYYY-MM-DD')),
+      matchStart = ref(moment().subtract(7, "days").format("YYYY-MM-DD")),
       selected = ref(""),
-      fasCheck=ref(false),
-      fasData=ref([]);
+      fasCheck = ref(false),
+      fasData = ref([]);
 
-    const submitting=async()=> {
+    const submitting = async () => {
       try {
         showLoader();
-        fasData.value = await getMatchFasitm('fasitm', matchStart.value, matchEnd.value, selected.value);
-        fasCheck.value=true;
+        fasData.value = await getMatchFasitm(
+          "fasitm",
+          matchStart.value,
+          matchEnd.value,
+          selected.value
+        );
+        fasCheck.value = true;
         hideLoader();
         console.log(fasData.value);
       } catch (error) {
         notifyError(error.message);
       }
-    }
-
+    };
 
     return {
       companies,
@@ -116,8 +118,7 @@ export default {
       selected,
       submitting,
       fasData,
-      fasCheck
-
+      fasCheck,
     };
   },
 };

@@ -260,12 +260,7 @@ export default function useApi() {
     remove,
     createOrUpdate,
     customLogic,
-    getByDate,
-    getMatchFasitm,
-    getUnmatchFasitm,
-    getUnmatchOdritm,
-    autoMatchSingle,
-    autoMatch
+    getByDate
   }
 }
 

@@ -5,6 +5,7 @@
       class="bg-white"
     >
       <q-toolbar>
+        <!-- show this button only logged in -->
         <q-btn
           flat
           dense
@@ -25,13 +26,11 @@
             />Test Company
           </router-link>
         </q-toolbar-title>
-        <div>
-          <span
-            v-if="$store.state.auth.user"
-            class="text-caption q-mr-sm"
-          >
-            {{ $store.state.auth.user.email }}
-          </span>
+        <div
+          v-if="$store.state.auth.user"
+          class="text-caption q-mr-sm"
+        >
+          {{ $store.state.auth.user.email }}
           <q-btn
             label="Logout"
             @click="logout"
@@ -39,6 +38,23 @@
             rounded
             size="sm"
           />
+        </div>
+        <div v-else>
+          <q-btn
+            label="Login"
+            @click="...."
+            outline
+            rounded
+            size="sm"
+          />
+          <q-btn
+            label="Register"
+            @click="...."
+            outline
+            rounded
+            size="sm"
+          />
+
         </div>
       </q-toolbar>
     </q-header>
@@ -95,10 +111,7 @@ export default {
   name: "navbar",
 
   setup () {
-    const logout = async () => {
-      await supabase.auth.signOut()
-    }
-    return { logout }
+    // move all the old 'data' as ref here
   },
 
   data () {

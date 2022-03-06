@@ -50,38 +50,38 @@ const linksList = [
   {
     title: "Home",
     caption: "",
-    icon: 'home',
-    link: "http://localhost:8080/#/index",
+    icon: "home",
+    link: process.env.BASE + "/#/index",
   },
   {
     title: "Import",
     caption: "",
     icon: "publish",
-    link: "http://localhost:8080/#/order",
+    link: process.env.BASE + "/#/order",
   },
   {
     title: "Display",
     caption: "",
     icon: "description",
-    link: "http://localhost:8080/#/display",
+    link: process.env.BASE + "/#/display",
   },
   {
     title: "MatchFas",
     caption: "",
     icon: "done_outline",
-    link: "http://localhost:8080/#/matchfas",
+    link: process.env.BASE + "/#/matchfas",
   },
   {
     title: "Order-Fas",
     caption: "",
     icon: "fact_check",
-    link: "http://localhost:8080/#/orderfas",
+    link: process.env.BASE + "/#/orderfas",
   },
   {
     title: "Displaying fas",
     caption: "",
     icon: "monitor",
-    link: "http://localhost:8080/#/fas",
+    link: process.env.BASE + "/#/fas",
   },
 ];
 

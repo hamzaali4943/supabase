@@ -45,6 +45,7 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-build
     build: {
       env: {
+        BASE: 'http://localhost:8080',
         SUPABASE_URL: 'https://gupmwqgqakwzkueriefi.supabase.co',
         SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0Mzk1NDUxMiwiZXhwIjoxOTU5NTMwNTEyfQ.Tx7GVTSclfQyDOA0VppuIWiPTlupouAXzX581eh3xYw'
       },

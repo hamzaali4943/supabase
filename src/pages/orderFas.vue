@@ -92,7 +92,7 @@ export default {
         hideLoader();
         if (res) {
           notifySuccess("Record matched successfully");
-          window.location.href = "http://localhost:8080/#/matchfas";
+          window.location.href = process.env.BASE + "/#/matchfas";
         } else {
           notifyError("Cannot find record to match");
         }
@@ -105,7 +105,7 @@ export default {
         showLoader();
         await autoMatch("orditm");
         hideLoader();
-        window.location.href = "http://localhost:8080/#/matchfas";
+        window.location.href = process.env.BASE + "/#/matchfas";
       } catch (error) {
         notifyError(error.message);
       }

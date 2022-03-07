@@ -4,7 +4,8 @@ const routes = [
     component: () => import('layouts/LoginLayout.vue'),
     children: [
       { path: '', name: 'loginDefault', component: () => import('pages/Auth.vue') },
-      { path: 'login', name: 'login', component: () => import('pages/Auth.vue')},
+      { path: 'login', name: 'login', component: () => import('pages/Auth.vue') },
+      { path: 'resetdb', name: 'resetdb', component: () => import('pages/ResetDb.vue') },
     ]
   },
   {
@@ -13,10 +14,10 @@ const routes = [
     children: [
       { path: 'index', name: "index", component: () => import('pages/Index.vue') },
       { path: 'order', name: 'order', component: () => import('pages/order.vue') },
-      { path: 'display', name: 'displayOrder', component: () => import('pages/displayOrders.vue')},
-      { path: 'matchfas', name: 'MatchFas', component: () => import('pages/MatchFas.vue')},
-      { path: 'orderfas', name: 'OrderFas', component: () => import('pages/orderFas.vue')},
-      { path: 'fas', name: 'Fas', component: () => import('pages/fas.vue')}
+      { path: 'display', name: 'displayOrder', component: () => import('pages/displayOrders.vue') },
+      { path: 'matchfas', name: 'MatchFas', component: () => import('pages/MatchFas.vue') },
+      { path: 'orderfas', name: 'OrderFas', component: () => import('pages/orderFas.vue') },
+      { path: 'fas', name: 'Fas', component: () => import('pages/fas.vue') }
     ],
     meta: {
       requiresAuth: true

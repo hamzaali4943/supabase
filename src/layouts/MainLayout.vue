@@ -13,9 +13,17 @@
 
         <q-toolbar-title> Supabase </q-toolbar-title>
 
-        <q-btn-dropdown flat color="white" icon="person">
+        <q-btn-dropdown
+          flat
+          color="white"
+          icon="person"
+        >
           <q-list>
-            <q-item clickable v-close-popup @click="handleLogout">
+            <q-item
+              clickable
+              v-close-popup
+              @click="handleLogout"
+            >
               <q-item-section>
                 <q-item-label>Logout</q-item-label>
               </q-item-section>
@@ -25,7 +33,11 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      bordered
+    >
       <q-list>
         <q-item-label header> Menu </q-item-label>
 
@@ -54,7 +66,7 @@ const linksList = [
     link: process.env.BASE + "/#/index",
   },
   {
-    title: "Import",
+    title: "Import Order",
     caption: "",
     icon: "publish",
     link: process.env.BASE + "/#/order",
@@ -66,19 +78,19 @@ const linksList = [
     link: process.env.BASE + "/#/display",
   },
   {
-    title: "MatchFas",
+    title: "Matched Fas",
     caption: "",
     icon: "done_outline",
     link: process.env.BASE + "/#/matchfas",
   },
   {
-    title: "Order-Fas",
+    title: "Match UPI",
     caption: "",
     icon: "fact_check",
     link: process.env.BASE + "/#/orderfas",
   },
   {
-    title: "Displaying fas",
+    title: "Import Fas",
     caption: "",
     icon: "monitor",
     link: process.env.BASE + "/#/fas",
@@ -97,7 +109,7 @@ export default defineComponent({
     EssentialLink,
   },
 
-  setup() {
+  setup () {
     const leftDrawerOpen = ref(false);
 
     const $q = useQuasar();
@@ -119,7 +131,7 @@ export default defineComponent({
     return {
       essentialLinks: linksList,
       leftDrawerOpen,
-      toggleLeftDrawer() {
+      toggleLeftDrawer () {
         leftDrawerOpen.value = !leftDrawerOpen.value;
       },
       handleLogout,
